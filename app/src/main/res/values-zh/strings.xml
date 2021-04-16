@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">俄罗斯方块</string>
+    <string name="start_game">开始游戏</string>
+    <string name="ranking_list">排行榜</string>
+    <string name="continue_playing">继续游戏</string>
+    <string name="next_block_preview">下一块预览</string>
+    <string name="top_score">最高分</string>
+    <string name="current_score">当前分数</string>
+    <string name="game_restart">重新开始</string>
+    <string name="game_pause">暂停</string>
+    <string name="game_continue">继续</string>
+    <string name="game_left">左</string>
+    <string name="game_right">右</string>
+    <string name="game_down">下</string>
+    <string name="game_fall">下落</string>
+    <string name="game_spin">旋转</string>
+    <string name="game_rank">排名</string>
+    <string name="rank_name">姓名</string>
+    <string name="rank_score">分数</string>
+    <string name="game_over">游戏结束</string>
+    <string name="record_score">记录分数</string>
+    <string name="add_name">若同意请在下方输入姓名</string>
+    <string name="add_cancel">取消</string>
+    <string name="add_finish">完成</string>
+    <string name="enter_name">请输入姓名</string>
+    <string name="add_congratulations">恭喜您获得了%1$s分！记录將会保存到排行榜</string>
+    <string name="language">语言</string>
+    <string name="btn_en">ENGLISH</string>
+    <string name="btn_zh">中文(简体)</string>
+    <string name="appwidget_text">查询排行榜</string>
+    <string name="add_widget">Add widget</string>
+</resources>
