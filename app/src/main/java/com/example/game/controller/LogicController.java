@@ -82,8 +82,8 @@ public class LogicController {
 
     public LogicController(Handler handler,Context context,boolean isStart,DataStorage dataStorage,TextView mTvTimer){
         this.handler = handler;
-        initData(context.getApplicationContext(),dataStorage);
-        this.context = context.getApplicationContext();
+        initData(context,dataStorage);
+        this.context = context;
         this.isStart = isStart;
         this.mTvTimer = mTvTimer;
         Log.d("st1122",""+isStart);
@@ -299,7 +299,7 @@ public class LogicController {
 
     /*后台返回游戏*/
     public void setBackgroundResume(){
-        if (!isStart || isOver || !isPause){
+        if (!isStart || isOver || isPause){
             return;
         }
         isPause =false;

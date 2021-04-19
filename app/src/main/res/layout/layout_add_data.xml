@@ -16,20 +16,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/record_score"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:textColor="@color/colorAccent"/>
         <TextView
             android:id="@+id/tv_tips_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:gravity="center_horizontal"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add_name"
             android:textColor="@color/colorGreen"
-            android:textSize="20sp"
+            android:textSize="10sp"
             android:gravity="center_horizontal"/>
 
         <EditText

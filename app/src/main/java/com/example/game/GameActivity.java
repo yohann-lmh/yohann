@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -26,21 +27,15 @@ import com.example.game.database.DataStorage;
 import com.example.game.database.MyDBHelper;
 import com.example.game.database.RankingList;
 import com.example.game.util.Config;
+import com.example.game.util.DataFileUtil;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class GameActivity extends Activity implements View.OnClickListener {
 
     private boolean isStart;
 
@@ -50,6 +45,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     //下一块预览控件
     public View nextPreview;
+
+    public DataFileUtil dataFileUtil;
 
 
     public Button pause;
@@ -115,10 +112,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mTvtimer = findViewById(R.id.tv_timer);
         pause = findViewById(R.id.btn_pause);
         myDBHelper = new MyDBHelper(this, "rankinglist", null, 1);
+        dataFileUtil = new DataFileUtil();
         Bundle bundle = getIntent().getExtras();
         isStart = false;
         if (bundle.getString("message").equals("continue")){
-            String data = readDataFile("data.txt");
+            String data = dataFileUtil.readDataFile("data.txt",this);
             Gson gson = new Gson();
             DataStorage dataStorage = gson.fromJson(data,DataStorage.class);
             Log.d("data",data+"");
@@ -233,7 +231,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         logicController.setBackgroundResume();
     }
 
-
     @Override
     protected void onDestroy() {
         logicController.isExit = false;
@@ -257,57 +254,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     logicController.boxsModel.boxNextType);
             Gson gson = new Gson();
             String data = gson.toJson(dataStorage);
-            saveDataFile(data,"data.txt");
+            dataFileUtil.saveDataFile(data,"data.txt",this);
         }
         super.onStop();
-    }
-
-    //将数据保存到文件中(手机空间)
-    public void saveDataFile(String data,String fileName){
-        FileOutputStream fileOutputStream = null;
-        BufferedWriter bufferedWriter = null;
-        try {
-            //创建文件并可覆盖
-            fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
-            bufferedWriter.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (bufferedWriter!=null){
-                try {
-                    bufferedWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    //读取文件中数据
-    public String readDataFile( String fileName){
-        FileInputStream fileInputStream = null;
-        BufferedReader bufferedReader = null;
-        StringBuilder sb = new StringBuilder();
-        try {
-            fileInputStream = openFileInput(fileName);
-            bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-            String data = "";
-            while( (data =bufferedReader.readLine()) != null){
-                sb.append(data);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (bufferedReader != null){
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
-
     }
 }

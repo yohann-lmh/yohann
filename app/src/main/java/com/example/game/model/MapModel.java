@@ -1,16 +1,24 @@
 package com.example.game.model;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import com.example.game.AddDataActivity;
+import androidx.appcompat.app.AlertDialog;
+
 import com.example.game.GameActivity;
 import com.example.game.R;
 import com.example.game.controller.LogicController;
+import com.example.game.database.MyDBHelper;
 import com.example.game.util.Config;
+import com.example.game.util.ToastUtil;
 
 public class MapModel {
 
@@ -37,6 +45,17 @@ public class MapModel {
 
     //是否执行添加排行榜
     private boolean isAdd = false;
+
+    //与数据库操作相关的成员变量
+    public MyDBHelper myDBHelper;//数据库帮助工具类
+
+    /*public SQLiteDatabase db;//数据库类*/
+
+    public ContentValues values;//数据表的一些操作参数
+
+    public static final String mtableName = "rankinglist";//数据库排行榜表名称
+
+    public ScoreModel scoreModel;
 
 
 
@@ -108,13 +127,47 @@ public class MapModel {
             //游戏结束之后判断分数是否到达进入排行榜的标准并添加到数据库
             //如果未执行则执行，反之则不执行（限制只可执行一次）
             if (!isAdd){
-                if (score>=50){
-                    Intent intent = new Intent(context, AddDataActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("score",score);
-                    intent.putExtras(bundle);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
-                    context.startActivity(intent);
+                if (score>=1){
+                    myDBHelper = new MyDBHelper(context, "rankinglist", null, 1);
+                    scoreModel = new ScoreModel();
+                    final AlertDialog builder = new AlertDialog.Builder(context).create();
+                    View view = LayoutInflater.from(context).inflate(R.layout.layout_add_data,null);
+                    final EditText mEtUsername = view.findViewById(R.id.et_username);
+                    TextView mTvTips = view.findViewById(R.id.tv_tips_score);
+                    Button mBtnCancel = view.findViewById(R.id.btn_cancel);
+                    Button mBtnRemaining = view.findViewById(R.id.btn_remaining);
+                    String str = context.getResources().getString(R.string.add_congratulations);
+                    String text = String.format(str,""+score+"");
+                    mTvTips.setText(text);
+                    builder.setView(view);
+                    builder.show();
+                    mBtnRemaining.setOnClickListener(new View.OnClickListener() {
+                        SQLiteDatabase db = null;
+                        @Override
+                        public void onClick(View v) {
+                            //SQLiteDatabase对象可以对数据库进行读写操作
+                            String name = mEtUsername.getText().toString();
+                            if (name.equals("")){
+                                ToastUtil.showMag(context,"请输入名称之后添加");
+                            }else {
+                                db = myDBHelper.getWritableDatabase();
+                                values = new ContentValues();
+                                values.put("name",name);
+                                values.put("score",score);
+                                db.insert(mtableName,null,values);
+                                values.clear();
+                                db.close();
+                                scoreModel.removeScore();
+                                builder.dismiss();
+                            }
+                        }
+                    });
+                    mBtnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            builder.dismiss();
+                        }
+                    });
                 }
                 isAdd = true;
             }
